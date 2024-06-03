@@ -48,3 +48,22 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+# Project Setup Guide for Mac
+
+Welcome to the React App with Expo project! Follow the steps below to set up the project on your local Mac machine.
+
+## Prerequisites
+
+Before you begin, make sure you have the following installed on your Mac:
+
+- [Node.js](https://nodejs.org/) (version 14 or higher)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+
+## Step 1: Clone the Repository
+
+First, you need to clone the project repository from GitHub. Open your terminal and run the following command:
+
+```bash
+git clone https://github.com/your-username/your-repo-name.git
