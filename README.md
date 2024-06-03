@@ -35,6 +35,13 @@ Install the necessary dependencies using `npm`:
 ```bash
 npm install
 ```
+## Step 4: Start the Expo Server
+
+Start the Expo development server by running:
+
+```bash
+expo start
+```
 
 ## Step 5: Run the App on an Emulator or Physical Device
 
