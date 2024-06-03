@@ -68,3 +68,12 @@ First, you need to clone the project repository from GitHub. Open your terminal 
 
 ```bash
 git clone https://github.com/Newton-School/adv-course-assignment.git
+```
+
+## Step 2: Navigate to the Project Directory
+
+Change to the project directory using the `cd` command:
+
+```bash
+cd your-repo-name
+```
