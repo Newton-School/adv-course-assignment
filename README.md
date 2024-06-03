@@ -57,7 +57,8 @@ Welcome to the React App with Expo project! Follow the steps below to set up the
 
 Before you begin, make sure you have the following installed on your Mac:
 
-- [Node.js](https://nodejs.org/) (version 14 or higher)
+- [Node.js](https://nodejs.org/) (version 20 or higher)
+- https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating ( use this to install node version )
 - [npm](https://www.npmjs.com/) (comes with Node.js)
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
 
