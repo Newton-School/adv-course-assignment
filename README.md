@@ -75,3 +75,43 @@ expo start
 3. click on the `Run on Android device/emulator` button in the Expo development tools.
 4. Follow the prompts on your Android device to allow USB debugging and install the Expo Go app.
 5. The app should now run on your connected Android device.
+
+
+# Steps to Build the App Locally
+
+Follow these steps to build your Android app locally.
+
+## Prerequisites
+
+Ensure you have the following tools installed:
+
+- [Node.js](https://nodejs.org/)
+- [nvm (Node Version Manager)](https://github.com/nvm-sh/nvm)
+- [Homebrew](https://brew.sh/)
+
+## Step-by-Step Instructions
+
+```bash
+# 1. Install `eas-cli` Globally
+npm install --global eas-cli
+
+# 2. Set Default Node.js Version Using `nvm`
+nvm alias default 20
+
+# 3. Install `bundletool` via Homebrew
+brew install bundletool
+
+# 4. Generate a Keystore (if you haven't already)
+keytool -genkeypair -v -keystore ./keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias keyAlias
+
+# 5. Build the Android App Locally
+eas build --platform android --local
+
+# 6. Generate APKs Using `bundletool`
+bundletool build-apks --bundle=path/to/your_app.aab --output=path/to/your_app.apks --mode=universal --ks=./keystore.jks --ks-key-alias=keyAlias --ks-pass=pass:test123
+
+# 7. Install the APKs Using `bundletool`
+bundletool install-apks --apks=path/to/your_app.apks
+
+# 8. Clean Up Generated Files
+rm -rf path/to/your_app.apks
