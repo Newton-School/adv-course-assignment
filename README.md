@@ -89,6 +89,7 @@ Ensure you have the following tools installed:
 - [nvm (Node Version Manager)](https://github.com/nvm-sh/nvm)
 - [Homebrew](https://brew.sh/)
 
+Create an account https://expo.dev/ [expo dev]
 ## Step-by-Step Instructions
 
 ```bash
