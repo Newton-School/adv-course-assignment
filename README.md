@@ -67,4 +67,4 @@ Before you begin, make sure you have the following installed on your Mac:
 First, you need to clone the project repository from GitHub. Open your terminal and run the following command:
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/Newton-School/adv-course-assignment.git
