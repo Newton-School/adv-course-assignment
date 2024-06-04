@@ -40,7 +40,7 @@ npm install
 Start the Expo development server by running:
 
 ```bash
-expo start
+npm start
 ```
 
 ## Step 5: Run the App on an Emulator or Physical Device
