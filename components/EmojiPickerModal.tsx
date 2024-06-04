@@ -18,7 +18,7 @@ export default function EmojiPickerModal({isVisible, onClose, children}:
                     <Pressable
                         onPress={onClose}
                     >
-                        <MaterialIcons name="close" color="#fff" size={22}/>
+                        <MaterialIcons name="close" color="#ffd700" size={22} style={{ marginVertical: 5 }}/>
                     </Pressable>
                 </View>
                 {children}
@@ -42,12 +42,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#464C55',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 40,
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
     title: {
-        color: '#fff',
+        fontWeight: 500,
+        marginVertical: 4,
+        color: '#ffd700',
         fontSize: 18,
         lineHeight: 24,
     }
