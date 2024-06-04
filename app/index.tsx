@@ -61,6 +61,7 @@ export default function Index() {
                     if (localUri) {
                         alert("Image saved successfully");
                     }
+                    onReset();
                 } catch (e) {
                     alert("An error occurred while saving the image");
                 }
@@ -77,6 +78,7 @@ export default function Index() {
                         link.href = dataUrl;
                         link.click();
                     }
+                    onReset();
                 } catch (e) {
                     alert("An error occurred while saving the image");
                 }
