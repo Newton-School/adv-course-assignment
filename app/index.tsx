@@ -23,6 +23,7 @@ export default function Index() {
     const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | null>(null);
+    const [isModified, setIsModified] = useState<boolean>(false);
     const imageRef = useRef(null);
 
     const pickImageAsync = async () => {
@@ -41,44 +42,48 @@ export default function Index() {
         setShowAppOptions(false);
         setSelectedImage('');
         setPickedEmoji(null);
+        setIsModified(false);
     }
     const onAddSticker = () => {
         setModalVisible(true);
     }
     const onSaveImageAsync = async () => {
-        if (Platform.OS !== 'web') {
-            try {
-                const localUri = await captureRef(imageRef, {
-                    height: 440,
-                    quality: 1,
-                });
+        if (isModified) {
+            if (Platform.OS !== 'web') {
+                try {
+                    const localUri = await captureRef(imageRef, {
+                        height: 440,
+                        quality: 1,
+                    });
 
-                await MediaLibrary.saveToLibraryAsync(localUri);
-                if (localUri) {
-                    alert("Image saved successfully");
+                    await MediaLibrary.saveToLibraryAsync(localUri);
+                    if (localUri) {
+                        alert("Image saved successfully");
+                    }
+                } catch (e) {
+                    alert("An error occurred while saving the image");
                 }
-            } catch (e) {
-                alert("An error occurred while saving the image");
+            } else {
+                try {
+                    if (imageRef.current) {
+                        const dataUrl = await domToImage.toJpeg(imageRef.current, {
+                            width: 320,
+                            height: 440,
+                            quality: 1
+                        });
+                        let link = document.createElement('a');
+                        link.download = 'image.jpeg';
+                        link.href = dataUrl;
+                        link.click();
+                    }
+                } catch (e) {
+                    alert("An error occurred while saving the image");
+                    ;
+                }
+
             }
         } else {
-            try {
-                if (imageRef.current) {
-                    const dataUrl = await domToImage.toJpeg(imageRef.current, {
-                        width: 320,
-                        height: 440,
-                        quality: 1
-                    });
-                    let link = document.createElement('a');
-                    link.download = 'image.jpeg';
-                    link.href = dataUrl;
-                    link.click();
-                }
-            } catch (e) {
-                alert("An error occurred while saving the image");
-                ;
-            }
-
-
+            alert("Oh! no, no, no!!!");
         }
 
     }
@@ -128,7 +133,7 @@ export default function Index() {
                 )
             }
             <EmojiPickerModal isVisible={modalVisible} onClose={closeModal}>
-                <EmojiList onSelect={setPickedEmoji} onCLose={closeModal}/>
+                <EmojiList onSelect={setPickedEmoji} onCLose={closeModal} setIsModified={setIsModified} />
             </EmojiPickerModal>
             <StatusBar style="inverted"/>
         </GestureHandlerRootView>
