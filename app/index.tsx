@@ -1,13 +1,11 @@
-import {useRef, useState} from "react";
-
-import {ImageSourcePropType, Platform, StyleSheet, View} from "react-native";
-import {StatusBar} from "expo-status-bar";
+import { useRef, useState } from "react";
+import { ImageSourcePropType, Platform, StyleSheet, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import * as ImagePicker from 'expo-image-picker';
-import {GestureHandlerRootView} from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as MediaLibrary from 'expo-media-library';
-import {captureRef} from "react-native-view-shot";
+import { captureRef } from "react-native-view-shot";
 import domToImage from 'dom-to-image';
-
 
 import ImageViewer from "@/components/ImageViewer";
 import ButtonView from "@/components/ButtonView";
@@ -37,15 +35,23 @@ export default function Index() {
             alert("you cancelled the image picker");
         }
     };
+
     const onReset = () => {
         setShowAppOptions(false);
         setSelectedImage('');
         setPickedEmoji(null);
-    }
+    };
+
     const onAddSticker = () => {
         setModalVisible(true);
-    }
+    };
+
     const onSaveImageAsync = async () => {
+        if (!pickedEmoji) {
+            alert("Oh! no, no, no!!!");
+            return;
+        }
+
         if (Platform.OS !== 'web') {
             try {
                 const localUri = await captureRef(imageRef, {
@@ -75,21 +81,18 @@ export default function Index() {
                 }
             } catch (e) {
                 alert("An error occurred while saving the image");
-                ;
             }
-
-
         }
+    };
 
-    }
     const closeModal = () => {
         setModalVisible(false);
-    }
+    };
 
     if (status === null) {
         requestPermission();
     }
-    //
+
     return (
         <GestureHandlerRootView
             style={styles.background}
@@ -103,38 +106,37 @@ export default function Index() {
                     placeHolderSource={require('@/assets/images/background-image.png')}
                     imageSource={selectedImage}
                 />
-                {pickedEmoji ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji}/> : null}
+                {pickedEmoji ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji} /> : null}
             </View>
             {
                 showAppOptions ? (
                     <View style={styles.optionsContainer}>
                         <View style={styles.optionsRow}>
-                            <IconButton icon={"refresh"} onPress={onReset} text={"Reset"}/>
-                            <CircularButton onPress={onAddSticker}/>
-                            <IconButton icon={"save-alt"} onPress={onSaveImageAsync} text={"Save"}/>
+                            <IconButton icon={"refresh"} onPress={onReset} text={"Reset"} />
+                            <CircularButton onPress={onAddSticker} />
+                            <IconButton icon={"save-alt"} onPress={onSaveImageAsync} text={"Save"} />
                         </View>
                     </View>
                 ) : (
                     <View style={styles.footerContainer}>
                         <ButtonView
                             theme={'primary'}
-                            text={'Choose a photo'} onPress={pickImageAsync}/>
+                            text={'Choose a photo'} onPress={pickImageAsync} />
                         <ButtonView text={'Use this photo'} onPress={
                             () => {
                                 setShowAppOptions(true);
                             }
-                        }/>
+                        } />
                     </View>
                 )
             }
             <EmojiPickerModal isVisible={modalVisible} onClose={closeModal}>
-                <EmojiList onSelect={setPickedEmoji} onCLose={closeModal}/>
+                <EmojiList onSelect={setPickedEmoji} onCLose={closeModal} />
             </EmojiPickerModal>
-            <StatusBar style="inverted"/>
+            <StatusBar style="inverted" />
         </GestureHandlerRootView>
     );
 }
-
 
 const styles = StyleSheet.create({
     background: {
