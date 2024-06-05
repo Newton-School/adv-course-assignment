@@ -25,6 +25,11 @@ export default function Index() {
     const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | null>(null);
     const imageRef = useRef(null);
 
+    const imageBoundaries = {
+        width: 320,
+        height: 440
+    }
+
     const pickImageAsync = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
@@ -103,7 +108,7 @@ export default function Index() {
                     placeHolderSource={require('@/assets/images/background-image.png')}
                     imageSource={selectedImage}
                 />
-                {pickedEmoji ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji}/> : null}
+                {pickedEmoji ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji} imageBoundaries={imageBoundaries} /> : null}
             </View>
             {
                 showAppOptions ? (
