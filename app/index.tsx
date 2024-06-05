@@ -1,13 +1,6 @@
 import { useRef, useState } from "react";
-import {
-  ImageSourcePropType,
-  Platform,
-  StyleSheet,
-  View,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+
+import { ImageSourcePropType, Platform, StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as ImagePicker from "expo-image-picker";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -23,13 +16,6 @@ import EmojiPickerModal from "@/components/EmojiPickerModal";
 import EmojiList from "@/components/EmojiList";
 import EmojiSticker from "@/components/EmojiSticker";
 
-const backgroundImages = [
-  require("@/assets/images/background-image-1.png"),
-  require("@/assets/images/background-image-2.jpg"),
-  require("@/assets/images/background-image-3.jpg"),
-  require("@/assets/images/background-image-4.jpg"),
-];
-
 export default function Index() {
   const [status, requestPermission] = MediaLibrary.usePermissions();
   const [selectedImage, setSelectedImage] = useState<string>("");
@@ -38,8 +24,6 @@ export default function Index() {
   const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | null>(
     null
   );
-  const [selectedBackgroundIndex, setSelectedBackgroundIndex] =
-    useState<number>(0);
   const imageRef = useRef(null);
 
   const pickImageAsync = async () => {
@@ -51,20 +35,17 @@ export default function Index() {
       setSelectedImage(result.assets[0].uri);
       setShowAppOptions(true);
     } else {
-      alert("You cancelled the image picker");
+      alert("you cancelled the image picker");
     }
   };
-
   const onReset = () => {
     setShowAppOptions(false);
     setSelectedImage("");
     setPickedEmoji(null);
   };
-
   const onAddSticker = () => {
     setModalVisible(true);
   };
-
   const onSaveImageAsync = async () => {
     if (Platform.OS !== "web") {
       try {
@@ -98,41 +79,19 @@ export default function Index() {
       }
     }
   };
-
   const closeModal = () => {
     setModalVisible(false);
-  };
-
-  const renderBackgroundImage = ({ item, index }) => {
-    return (
-      <TouchableOpacity onPress={() => setSelectedBackgroundIndex(index)}>
-        <Image
-          source={item}
-          style={[
-            styles.backgroundThumbnail,
-            { opacity: index === selectedBackgroundIndex ? 1 : 0.5 },
-          ]}
-        />
-      </TouchableOpacity>
-    );
   };
 
   if (status === null) {
     requestPermission();
   }
-
+  //
   return (
     <GestureHandlerRootView style={styles.background}>
       <View style={styles.imageContainer} ref={imageRef} collapsable={false}>
-        <FlatList
-          data={backgroundImages}
-          renderItem={renderBackgroundImage}
-          horizontal
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={styles.thumbnailList}
-        />
         <ImageViewer
-          placeHolderSource={backgroundImages[selectedBackgroundIndex]}
+          placeHolderSource={require("@/assets/images/background-image.png")}
           imageSource={selectedImage}
         />
         {pickedEmoji ? (
@@ -153,7 +112,6 @@ export default function Index() {
         </View>
       ) : (
         <View style={styles.footerContainer}>
-          <View style={styles.spacer} />
           <ButtonView
             theme={"primary"}
             text={"Choose a photo"}
@@ -161,12 +119,14 @@ export default function Index() {
           />
           <ButtonView
             text={"Use this photo"}
-            onPress={() => setShowAppOptions(true)}
+            onPress={() => {
+              setShowAppOptions(true);
+            }}
           />
         </View>
       )}
       <EmojiPickerModal isVisible={modalVisible} onClose={closeModal}>
-        <EmojiList onSelect={setPickedEmoji} onClose={closeModal} />
+        <EmojiList onSelect={setPickedEmoji} onCLose={closeModal} />
       </EmojiPickerModal>
       <StatusBar style="inverted" />
     </GestureHandlerRootView>
@@ -189,16 +149,10 @@ const styles = StyleSheet.create({
   footerContainer: {
     flex: 1 / 3,
     alignItems: "center",
-    justifyContent: "flex-end",
-    paddingBottom: 20,
-  },
-  spacer: {
-    height: 20,
   },
   imageContainer: {
     flex: 1,
     paddingTop: 58,
-    alignItems: "center",
   },
   optionsContainer: {
     position: "absolute",
@@ -209,15 +163,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
     width: "100%",
-  },
-  thumbnailList: {
-    alignItems: "center",
-    paddingVertical: 10,
-  },
-  backgroundThumbnail: {
-    width: 80,
-    height: 80,
-    marginHorizontal: 5,
-    borderRadius: 10,
   },
 });
