@@ -50,6 +50,12 @@ export default function Index() {
         setModalVisible(true);
     }
     const onSaveImageAsync = async () => {
+        if (!pickedEmoji) {
+            toast.error("Oh! no, no, no!!!", {
+                theme: "dark"
+            });
+            return;
+        }
         if (Platform.OS !== 'web') {
             try {
                 const localUri = await captureRef(imageRef, {
@@ -59,7 +65,8 @@ export default function Index() {
 
                 await MediaLibrary.saveToLibraryAsync(localUri);
                 if (localUri) {
-                    toast.success("Accounte Loged In!", {
+                    console.log("enter")
+                    toast.success("Image saved successfully", {
                         theme: "dark"
                     });
                 }
