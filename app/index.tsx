@@ -1,4 +1,5 @@
 import {useRef, useState} from "react";
+import { Button } from "react-native";
 
 import {ImageSourcePropType, Platform, StyleSheet, View} from "react-native";
 import {StatusBar} from "expo-status-bar";
@@ -8,7 +9,6 @@ import * as MediaLibrary from 'expo-media-library';
 import {captureRef} from "react-native-view-shot";
 import domToImage from 'dom-to-image';
 
-
 import ImageViewer from "@/components/ImageViewer";
 import ButtonView from "@/components/ButtonView";
 import CircularButton from "@/components/CircularButton";
@@ -16,6 +16,7 @@ import IconButton from "@/components/IconButton";
 import EmojiPickerModal from "@/components/EmojiPickerModal";
 import EmojiList from "@/components/EmojiList";
 import EmojiSticker from "@/components/EmojiSticker";
+import NotificationModal from "@/components/NotificationModal";
 
 export default function Index() {
     const [status, requestPermission] = MediaLibrary.usePermissions();
@@ -23,7 +24,11 @@ export default function Index() {
     const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | null>(null);
+    const [notificationVisible, setNotificationVisible] = useState<boolean>(false);
+    const [notificationMessage, setNotificationMessage] = useState<string>('');
     const imageRef = useRef(null);
+    const [emojiSelected , setEmojiSelected] = useState(false);
+
 
     const pickImageAsync = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -34,7 +39,9 @@ export default function Index() {
             setSelectedImage(result.assets[0].uri);
             setShowAppOptions(true);
         } else {
-            alert("you cancelled the image picker");
+            setNotificationVisible(true);
+            setNotificationMessage("You cancelled the image picker");
+            
         }
     };
     const onReset = () => {
@@ -44,9 +51,16 @@ export default function Index() {
     }
     const onAddSticker = () => {
         setModalVisible(true);
+        setEmojiSelected(true);
     }
     const onSaveImageAsync = async () => {
-        if (Platform.OS !== 'web') {
+
+        if(!emojiSelected){
+            setNotificationVisible(true)
+            setNotificationMessage('Oh! no, no, no!!! You must add an emoji before saving the image.')
+        }
+
+        else if (Platform.OS !== 'web') {
             try {
                 const localUri = await captureRef(imageRef, {
                     height: 440,
@@ -55,10 +69,12 @@ export default function Index() {
 
                 await MediaLibrary.saveToLibraryAsync(localUri);
                 if (localUri) {
-                    alert("Image saved successfully");
+                    setNotificationMessage("Image Saved Successfully")
+                    setNotificationVisible(true)
                 }
             } catch (e) {
-                alert("An error occurred while saving the image");
+                setNotificationMessage("An error occurred while saving the image");
+                setNotificationVisible(true);
             }
         } else {
             try {
@@ -72,10 +88,13 @@ export default function Index() {
                     link.download = 'image.jpeg';
                     link.href = dataUrl;
                     link.click();
+                    setNotificationMessage("Image saved successfully");
+                    setNotificationVisible(true);
                 }
             } catch (e) {
-                alert("An error occurred while saving the image");
-                ;
+                setNotificationMessage("An error occurred while saving the image");
+                setNotificationVisible(true);
+                 
             }
 
 
@@ -84,6 +103,10 @@ export default function Index() {
     }
     const closeModal = () => {
         setModalVisible(false);
+    }
+
+    const closeNotification = () => {
+        setNotificationVisible(false);
     }
 
     if (status === null) {
@@ -127,13 +150,17 @@ export default function Index() {
                     </View>
                 )
             }
+            
             <EmojiPickerModal isVisible={modalVisible} onClose={closeModal}>
                 <EmojiList onSelect={setPickedEmoji} onCLose={closeModal}/>
             </EmojiPickerModal>
+            <NotificationModal isVisible={notificationVisible} onClose={closeNotification} message={notificationMessage} />
             <StatusBar style="inverted"/>
         </GestureHandlerRootView>
     );
 }
+
+
 
 
 const styles = StyleSheet.create({
