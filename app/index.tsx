@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-
 import { ImageSourcePropType, Platform, StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as ImagePicker from "expo-image-picker";
@@ -24,6 +23,7 @@ export default function Index() {
   const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | null>(
     null
   );
+  const [userImages, setUserImages] = useState<ImageSourcePropType[]>([]);
   const imageRef = useRef(null);
 
   const pickImageAsync = async () => {
@@ -38,14 +38,17 @@ export default function Index() {
       alert("you cancelled the image picker");
     }
   };
+
   const onReset = () => {
     setShowAppOptions(false);
     setSelectedImage("");
     setPickedEmoji(null);
   };
+
   const onAddSticker = () => {
     setModalVisible(true);
   };
+
   const onSaveImageAsync = async () => {
     if (Platform.OS !== "web") {
       try {
@@ -79,19 +82,36 @@ export default function Index() {
       }
     }
   };
+
   const closeModal = () => {
     setModalVisible(false);
+  };
+
+  const pickImageFromDevice = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      onAddUserImage(result.assets[0].uri);
+    }
+  };
+
+  const onAddUserImage = (image: ImageSourcePropType) => {
+    setUserImages((prevImages) => [...prevImages, image]);
   };
 
   if (status === null) {
     requestPermission();
   }
-  //
+
   return (
     <GestureHandlerRootView style={styles.background}>
       <View style={styles.imageContainer} ref={imageRef} collapsable={false}>
         <ImageViewer
-          placeHolderSource={require("@/assets/images/background-image.png")}
+          placeHolderSource={require("@/assets/background-image.png")}
           imageSource={selectedImage}
         />
         {pickedEmoji ? (
@@ -126,7 +146,12 @@ export default function Index() {
         </View>
       )}
       <EmojiPickerModal isVisible={modalVisible} onClose={closeModal}>
-        <EmojiList onSelect={setPickedEmoji} onCLose={closeModal} />
+        <EmojiList
+          onSelect={setPickedEmoji}
+          onCLose={closeModal}
+          userImages={userImages}
+          onAddUserImage={pickImageFromDevice}
+        />
       </EmojiPickerModal>
       <StatusBar style="inverted" />
     </GestureHandlerRootView>
