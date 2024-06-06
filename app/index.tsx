@@ -48,6 +48,7 @@ export default function Index() {
         setShowAppOptions(false);
         setSelectedImage('');
         setPickedEmoji(null);
+        setEmojiSelected(false);
     }
     const onAddSticker = () => {
         setModalVisible(true);
