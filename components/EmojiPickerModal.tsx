@@ -18,7 +18,10 @@ export default function EmojiPickerModal({isVisible, onClose, children}:
                     <Pressable
                         onPress={onClose}
                     >
-                        <MaterialIcons name="close" color="#fff" size={22}/>
+                        <div style={styles.circle}>
+                            <MaterialIcons name="close" color="#17252a" size={25}/>
+                        </div>
+                        
                     </Pressable>
                 </View>
                 {children}
@@ -28,26 +31,44 @@ export default function EmojiPickerModal({isVisible, onClose, children}:
 }
 
 const styles = StyleSheet.create({
+
+    circle:{
+        display: 'flex', 
+        width: 25,
+        height: 25,
+        borderRadius: 50, 
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#feffff', 
+        padding: 5,
+        marginTop: 4,
+
+
+    },
+
     modalContainer: {
-        height: '25%',
+        height: '30%',
         width: '100%',
         backgroundColor: '#25292e',
         borderTopRightRadius: 18,
         borderTopLeftRadius: 18,
         position: 'absolute',
         bottom: 0,
+        
     },
     titleContainer: {
-        height: '16%',
-        backgroundColor: '#464C55',
+        height: '20%',
+        backgroundColor: '#3aafa9',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 40,
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
     title: {
-        color: '#fff',
+        fontWeight: 1000,
+        marginVertical: 10,
+        color: '#17252a',
         fontSize: 18,
         lineHeight: 24,
     }
