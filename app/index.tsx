@@ -1,12 +1,14 @@
-import {useRef, useState} from "react";
+import { useRef, useState } from "react";
 
-import {ImageSourcePropType, Platform, StyleSheet, View} from "react-native";
-import {StatusBar} from "expo-status-bar";
+import { ImageSourcePropType, Platform, StyleSheet, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import * as ImagePicker from 'expo-image-picker';
-import {GestureHandlerRootView} from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as MediaLibrary from 'expo-media-library';
-import {captureRef} from "react-native-view-shot";
+import { captureRef } from "react-native-view-shot";
 import domToImage from 'dom-to-image';
+import { ToastContainer, Bounce, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 import ImageViewer from "@/components/ImageViewer";
@@ -34,7 +36,9 @@ export default function Index() {
             setSelectedImage(result.assets[0].uri);
             setShowAppOptions(true);
         } else {
-            alert("you cancelled the image picker");
+            toast.error("you cancelled the image picker", {
+                theme: "dark"
+            });
         }
     };
     const onReset = () => {
@@ -55,10 +59,14 @@ export default function Index() {
 
                 await MediaLibrary.saveToLibraryAsync(localUri);
                 if (localUri) {
-                    alert("Image saved successfully");
+                    toast.success("Accounte Loged In!", {
+                        theme: "dark"
+                    });
                 }
             } catch (e) {
-                alert("An error occurred while saving the image");
+                toast.error("An error occurred while saving the image", {
+                    theme: "dark"
+                });
             }
         } else {
             try {
@@ -74,7 +82,9 @@ export default function Index() {
                     link.click();
                 }
             } catch (e) {
-                alert("An error occurred while saving the image");
+                toast.error("An error occurred while saving the image", {
+                    theme: "dark"
+                });
                 ;
             }
 
@@ -91,47 +101,62 @@ export default function Index() {
     }
     //
     return (
-        <GestureHandlerRootView
-            style={styles.background}
-        >
-            <View
-                style={styles.imageContainer}
-                ref={imageRef}
-                collapsable={false}
+        <>
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+                transition={Bounce}
+            />
+            <GestureHandlerRootView
+                style={styles.background}
             >
-                <ImageViewer
-                    placeHolderSource={require('@/assets/images/background-image.png')}
-                    imageSource={selectedImage}
-                />
-                {pickedEmoji ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji}/> : null}
-            </View>
-            {
-                showAppOptions ? (
-                    <View style={styles.optionsContainer}>
-                        <View style={styles.optionsRow}>
-                            <IconButton icon={"refresh"} onPress={onReset} text={"Reset"}/>
-                            <CircularButton onPress={onAddSticker}/>
-                            <IconButton icon={"save-alt"} onPress={onSaveImageAsync} text={"Save"}/>
+                <View
+                    style={styles.imageContainer}
+                    ref={imageRef}
+                    collapsable={false}
+                >
+                    <ImageViewer
+                        placeHolderSource={require('@/assets/images/background-image.png')}
+                        imageSource={selectedImage}
+                    />
+                    {pickedEmoji ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji} /> : null}
+                </View>
+                {
+                    showAppOptions ? (
+                        <View style={styles.optionsContainer}>
+                            <View style={styles.optionsRow}>
+                                <IconButton icon={"refresh"} onPress={onReset} text={"Reset"} />
+                                <CircularButton onPress={onAddSticker} />
+                                <IconButton icon={"save-alt"} onPress={onSaveImageAsync} text={"Save"} />
+                            </View>
                         </View>
-                    </View>
-                ) : (
-                    <View style={styles.footerContainer}>
-                        <ButtonView
-                            theme={'primary'}
-                            text={'Choose a photo'} onPress={pickImageAsync}/>
-                        <ButtonView text={'Use this photo'} onPress={
-                            () => {
-                                setShowAppOptions(true);
-                            }
-                        }/>
-                    </View>
-                )
-            }
-            <EmojiPickerModal isVisible={modalVisible} onClose={closeModal}>
-                <EmojiList onSelect={setPickedEmoji} onCLose={closeModal}/>
-            </EmojiPickerModal>
-            <StatusBar style="inverted"/>
-        </GestureHandlerRootView>
+                    ) : (
+                        <View style={styles.footerContainer}>
+                            <ButtonView
+                                theme={'primary'}
+                                text={'Choose a photo'} onPress={pickImageAsync} />
+                            <ButtonView text={'Use this photo'} onPress={
+                                () => {
+                                    setShowAppOptions(true);
+                                }
+                            } />
+                        </View>
+                    )
+                }
+                <EmojiPickerModal isVisible={modalVisible} onClose={closeModal}>
+                    <EmojiList onSelect={setPickedEmoji} onCLose={closeModal} />
+                </EmojiPickerModal>
+                <StatusBar style="inverted" />
+            </GestureHandlerRootView>
+        </>
     );
 }
 
