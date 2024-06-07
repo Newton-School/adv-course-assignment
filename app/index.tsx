@@ -29,6 +29,9 @@ export default function Index() {
         width: 320,
         height: 440
     }
+    const onRemoveSticker = () => {
+        setPickedEmoji(null);
+      };
 
     const pickImageAsync = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -108,7 +111,14 @@ export default function Index() {
                     placeHolderSource={require('@/assets/images/background-image.png')}
                     imageSource={selectedImage}
                 />
-                {pickedEmoji ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji} imageBoundaries={imageBoundaries} /> : null}
+                {pickedEmoji ? (
+                    <EmojiSticker
+                    imageSize={40}
+                    stickerSource={pickedEmoji}
+                    imageBoundaries={imageBoundaries}
+                    onRemove={onRemoveSticker}
+                    />
+                ) : null}
             </View>
             {
                 showAppOptions ? (
