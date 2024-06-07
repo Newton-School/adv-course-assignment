@@ -1,5 +1,4 @@
-import { useRef, useState } from "react";
-
+import React, { useRef, useState, useEffect } from "react";
 import { ImageSourcePropType, Platform, StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as ImagePicker from "expo-image-picker";
@@ -15,16 +14,32 @@ import IconButton from "@/components/IconButton";
 import EmojiPickerModal from "@/components/EmojiPickerModal";
 import EmojiList from "@/components/EmojiList";
 import EmojiSticker from "@/components/EmojiSticker";
+import ImagePreviewBar from "@/components/ImagePreviewBar";
+
+const defaultImages = [
+  { uri: "../assets/images/background-image.png" },
+  { uri: "../assets/images/background-image-2.jpg" },
+  { uri: "../assets/images/background-image-3.jpg" },
+  { uri: "../assets/images/background-image-4.jpg" },
+];
 
 export default function Index() {
   const [status, requestPermission] = MediaLibrary.usePermissions();
-  const [selectedImage, setSelectedImage] = useState<string>("");
+  const [selectedImage, setSelectedImage] = useState<string>(
+    defaultImages[0].uri
+  );
   const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | null>(
     null
   );
   const imageRef = useRef(null);
+
+  useEffect(() => {
+    if (status === null) {
+      requestPermission();
+    }
+  }, [status]);
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -35,17 +50,20 @@ export default function Index() {
       setSelectedImage(result.assets[0].uri);
       setShowAppOptions(true);
     } else {
-      alert("you cancelled the image picker");
+      alert("You cancelled the image picker");
     }
   };
+
   const onReset = () => {
     setShowAppOptions(false);
-    setSelectedImage("");
+    setSelectedImage(defaultImages[0].uri);
     setPickedEmoji(null);
   };
+
   const onAddSticker = () => {
     setModalVisible(true);
   };
+
   const onSaveImageAsync = async () => {
     if (Platform.OS !== "web") {
       try {
@@ -79,16 +97,23 @@ export default function Index() {
       }
     }
   };
+
   const closeModal = () => {
     setModalVisible(false);
   };
 
-  if (status === null) {
-    requestPermission();
-  }
-  //
+  const handleSelectDefaultImage = (imageUri: string) => {
+    setSelectedImage(imageUri);
+    setShowAppOptions(true);
+  };
+
   return (
     <GestureHandlerRootView style={styles.background}>
+      <ImagePreviewBar
+        images={defaultImages}
+        selectedImage={selectedImage}
+        onSelectImage={handleSelectDefaultImage}
+      />
       <View style={styles.imageContainer} ref={imageRef} collapsable={false}>
         <ImageViewer
           placeHolderSource={require("@/assets/images/background-image.png")}
@@ -119,14 +144,12 @@ export default function Index() {
           />
           <ButtonView
             text={"Use this photo"}
-            onPress={() => {
-              setShowAppOptions(true);
-            }}
+            onPress={() => setShowAppOptions(true)}
           />
         </View>
       )}
       <EmojiPickerModal isVisible={modalVisible} onClose={closeModal}>
-        <EmojiList onSelect={setPickedEmoji} onCLose={closeModal} />
+        <EmojiList onSelect={setPickedEmoji} onClose={closeModal} />
       </EmojiPickerModal>
       <StatusBar style="inverted" />
     </GestureHandlerRootView>
@@ -153,10 +176,13 @@ const styles = StyleSheet.create({
   imageContainer: {
     flex: 1,
     paddingTop: 58,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 100,
   },
   optionsContainer: {
     position: "absolute",
-    bottom: 80,
+    bottom: 20,
   },
   optionsRow: {
     flexDirection: "row",
