@@ -3,9 +3,10 @@ import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import Animated, {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
 
 
-export default function EmojiSticker({imageSize, stickerSource}: {
+export default function EmojiSticker({ imageSize, stickerSource, imageBoundaries }: {
     imageSize: number,
-    stickerSource: ImageSourcePropType
+    stickerSource: ImageSourcePropType,
+    imageBoundaries: { width: number, height: number }
 }) {
     const scaleImage = useSharedValue(imageSize);
     const translateX = useSharedValue(0);
@@ -17,9 +18,13 @@ export default function EmojiSticker({imageSize, stickerSource}: {
             scaleImage.value = imageSize;
         }
     });
+
+    const maxTranslateX = imageBoundaries.width - scaleImage.value;
+    const maxTranslateY = imageBoundaries.height - scaleImage.value;
+
     const panGesture = Gesture.Pan().onChange((event) => {
-        translateX.value += event.changeX;
-        translateY.value += event.changeY;
+        translateX.value = Math.max(0, Math.min(maxTranslateX, translateX.value + event.changeX));
+        translateY.value = Math.max(0, Math.min(maxTranslateY, translateY.value + event.changeY));
     })
     const imageStyles = useAnimatedStyle(() => {
         return {
@@ -55,6 +60,6 @@ export default function EmojiSticker({imageSize, stickerSource}: {
 
 const styles = StyleSheet.create({
     emojiStickerContainer: {
-        top: -350
+        top: -442
     }
 })
