@@ -56,6 +56,7 @@ export default function Index() {
                 await MediaLibrary.saveToLibraryAsync(localUri);
                 if (localUri) {
                     alert("Image saved successfully");
+                    onReset();
                 }
             } catch (e) {
                 alert("An error occurred while saving the image");
@@ -72,6 +73,7 @@ export default function Index() {
                     link.download = 'image.jpeg';
                     link.href = dataUrl;
                     link.click();
+                    onReset();
                 }
             } catch (e) {
                 alert("An error occurred while saving the image");
