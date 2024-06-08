@@ -5,7 +5,7 @@ import {getBackgroundColor} from "@expo/metro-runtime/build/error-overlay/UI/Log
 export default function ButtonView({text, onPress, theme}: {text: string, onPress: () => void, theme?: string}) {
     if(theme === 'primary') {
         return (
-            <View style={[styles.btnContainer, {borderWidth: 4, borderColor: '#ffd33d', borderRadius: 18}]}>
+            <View style={[styles.btnContainer, {borderWidth: 4, borderColor: '#00b894', borderRadius: 18}]}>
                 <Pressable
                     style={[styles.button, {backgroundColor: '#fff'}]}
                     onPress={onPress}
@@ -13,10 +13,10 @@ export default function ButtonView({text, onPress, theme}: {text: string, onPres
                     <FontAwesome
                         name="picture-o"
                         size={24}
-                        color="#25292e"
+                        color="#00b894"
                         style={styles.buttonIcon}
                     />
-                    <Text style={[styles.text, { color: "#25292e"}]}>{text}</Text>
+                    <Text style={[styles.text, { color: "#00b894"}]}>{text}</Text>
                 </Pressable>
             </View>
         );
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     text: {
-        color: '#fff',
+        color: '#00b894',
         fontSize: 18,
         fontWeight: '500'
     },

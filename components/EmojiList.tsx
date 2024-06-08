@@ -1,10 +1,10 @@
-import {useState} from 'react';
-import {FlatList, Image, ImageSourcePropType, Platform, Pressable, StyleSheet} from "react-native";
+import React, { useState } from 'react';
+import { FlatList, Image, ImageSourcePropType, Platform, Pressable, StyleSheet, View, Button } from "react-native";
 
-
-export default function EmojiList({onSelect, onCLose}: {
+export default function EmojiList({ onSelect, onClose, addCustomEmoji }: {
     onSelect: (emoji: ImageSourcePropType) => void,
-    onCLose: () => void
+    onClose: () => void,
+    addCustomEmoji: () => void
 }) {
     const [emojis] = useState([
         require('../assets/emoji1.png'),
@@ -13,43 +13,51 @@ export default function EmojiList({onSelect, onCLose}: {
         require('../assets/emoji4.png'),
         require('../assets/emoji5.png'),
         require('../assets/emoji6.png'),
-    ])
+    ]);
     return (
-        <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={Platform.OS === 'web'}
-            data={emojis}
-            contentContainerStyle={styles.emojiListContainer}
-            renderItem={({item, index}) => {
-                return (<Pressable
-                    onPress={() => {
-                        onSelect(item);
-                        onCLose();
-                    }}
-                    key={index}
-                >
-                    <Image
-                        source={item}
-                        style={styles.emoji}
-                    />
-                </Pressable>)
-            }}
-        />
+        <View style={styles.container}>
+            <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={Platform.OS === 'web'}
+                data={emojis}
+                contentContainerStyle={styles.emojiListContainer}
+                renderItem={({ item, index }) => {
+                    return (
+                        <Pressable
+                            onPress={() => {
+                                onSelect(item);
+                                onClose();
+                            }}
+                            key={index}
+                        >
+                            <Image
+                                source={item}
+                                style={styles.emoji}
+                            />
+                        </Pressable>
+                    )
+                }}
+            />
+            <Button title="Add Custom Emoji" onPress={addCustomEmoji} />
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#111827',
+    },
     emojiListContainer: {
-        borderTopRightRadius: 10,
-        borderTopLeftRadius: 10,
-        paddingHorizontal: 20,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
     },
     emoji: {
-        width: 100,
-        height: 100,
+        maxWidth: 90,
+        maxHeight: 90,
         marginRight: 20
-    }
-})
+    },
+
+});
