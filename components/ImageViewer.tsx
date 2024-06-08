@@ -1,20 +1,28 @@
-import {Image, StyleSheet} from "react-native";
-import {ImageSourcePropType} from "react-native";
+import React from 'react';
+import { Image, StyleSheet, View } from 'react-native';
+import { ImageSourcePropType } from 'react-native';
 
-export default function ({placeHolderSource, imageSource}: {placeHolderSource: ImageSourcePropType, imageSource: string}) {
-  const imageSourceActual: ImageSourcePropType = imageSource ? {uri: imageSource} : placeHolderSource;
+export default function ImageViewer({ placeHolderSource, imageSource }: { placeHolderSource: ImageSourcePropType, imageSource: string }) {
   return (
-    <Image
-      source={imageSourceActual}
-      style={styles.imageStyles}
-    />
+      <View style={styles.container}>
+        <Image
+            source={imageSource ? { uri: imageSource } : placeHolderSource}
+            style={styles.imageStyles}
+            resizeMode="cover"
+        />
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 50,
+  },
   imageStyles: {
     width: 320,
     height: 440,
-    borderRadius: 18
-  }
-})
+    borderRadius: 18,
+  },
+});

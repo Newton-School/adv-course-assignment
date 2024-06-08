@@ -1,13 +1,12 @@
-import {useRef, useState} from "react";
-
-import {ImageSourcePropType, Platform, StyleSheet, View} from "react-native";
-import {StatusBar} from "expo-status-bar";
+import React, { useState, useEffect, useRef } from "react";
+import { StyleSheet, View, Platform, Alert } from "react-native";
+import { ImageSourcePropType } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import * as ImagePicker from 'expo-image-picker';
-import {GestureHandlerRootView} from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as MediaLibrary from 'expo-media-library';
-import {captureRef} from "react-native-view-shot";
+import { captureRef } from "react-native-view-shot";
 import domToImage from 'dom-to-image';
-
 
 import ImageViewer from "@/components/ImageViewer";
 import ButtonView from "@/components/ButtonView";
@@ -24,6 +23,11 @@ export default function Index() {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | null>(null);
     const imageRef = useRef(null);
+    const [imageUrl, setImageUrl] = useState<string>('');
+
+    useEffect(() => {
+        setImageUrl('https://picsum.photos/440/320');
+    }, []);
 
     const pickImageAsync = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -34,17 +38,20 @@ export default function Index() {
             setSelectedImage(result.assets[0].uri);
             setShowAppOptions(true);
         } else {
-            alert("you cancelled the image picker");
+            Alert.alert("You cancelled the image picker");
         }
     };
+
     const onReset = () => {
         setShowAppOptions(false);
         setSelectedImage('');
         setPickedEmoji(null);
     }
+
     const onAddSticker = () => {
         setModalVisible(true);
     }
+
     const onSaveImageAsync = async () => {
         if (Platform.OS !== 'web') {
             try {
@@ -55,10 +62,10 @@ export default function Index() {
 
                 await MediaLibrary.saveToLibraryAsync(localUri);
                 if (localUri) {
-                    alert("Image saved successfully");
+                    Alert.alert("Image saved successfully");
                 }
             } catch (e) {
-                alert("An error occurred while saving the image");
+                Alert.alert("An error occurred while saving the image");
             }
         } else {
             try {
@@ -74,59 +81,49 @@ export default function Index() {
                     link.click();
                 }
             } catch (e) {
-                alert("An error occurred while saving the image");
-                ;
+                Alert.alert("An error occurred while saving the image");
             }
-
-
         }
-
     }
+
     const closeModal = () => {
         setModalVisible(false);
+    }
+
+    const changeRandomImage = () => {
+        setImageUrl(`https://picsum.photos/440/320?random=${Math.random()}`);
     }
 
     if (status === null) {
         requestPermission();
     }
-    //
+
     return (
-        <GestureHandlerRootView
-            style={styles.background}
-        >
-            <View
-                style={styles.imageContainer}
-                ref={imageRef}
-                collapsable={false}
-            >
+        <GestureHandlerRootView style={styles.background}>
+            <View style={styles.imageContainer} ref={imageRef} collapsable={false}>
                 <ImageViewer
                     placeHolderSource={require('@/assets/images/background-image.png')}
-                    imageSource={selectedImage}
+                    imageSource={selectedImage || imageUrl}
                 />
                 {pickedEmoji ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji}/> : null}
             </View>
-            {
-                showAppOptions ? (
-                    <View style={styles.optionsContainer}>
-                        <View style={styles.optionsRow}>
-                            <IconButton icon={"refresh"} onPress={onReset} text={"Reset"}/>
-                            <CircularButton onPress={onAddSticker}/>
-                            <IconButton icon={"save-alt"} onPress={onSaveImageAsync} text={"Save"}/>
-                        </View>
+            {showAppOptions ? (
+                <View style={styles.optionsContainer}>
+                    <View style={styles.optionsRow}>
+                        <IconButton icon={"refresh"} onPress={onReset} text={"Reset"}/>
+                        <CircularButton onPress={onAddSticker}/>
+                        <IconButton icon={"save-alt"} onPress={onSaveImageAsync} text={"Save"}/>
                     </View>
-                ) : (
-                    <View style={styles.footerContainer}>
-                        <ButtonView
-                            theme={'primary'}
-                            text={'Choose a photo'} onPress={pickImageAsync}/>
-                        <ButtonView text={'Use this photo'} onPress={
-                            () => {
-                                setShowAppOptions(true);
-                            }
-                        }/>
+                </View>
+            ) : (
+                <View style={styles.footerContainer}>
+                    <View style={styles.footerRow}>
+                        <ButtonView theme={'primary'} text={'Choose a photo'} onPress={pickImageAsync} Name={"From Local"}/>
+                        <ButtonView theme={'primary'} text={'Random'} onPress={changeRandomImage} Name={"Random"}/>
                     </View>
-                )
-            }
+                    <ButtonView theme={"secondary"} text={'Use this photo'} onPress={() => setShowAppOptions(true) }/>
+                </View>
+            )}
             <EmojiPickerModal isVisible={modalVisible} onClose={closeModal}>
                 <EmojiList onSelect={setPickedEmoji} onCLose={closeModal}/>
             </EmojiPickerModal>
@@ -134,7 +131,6 @@ export default function Index() {
         </GestureHandlerRootView>
     );
 }
-
 
 const styles = StyleSheet.create({
     background: {
@@ -152,6 +148,13 @@ const styles = StyleSheet.create({
     footerContainer: {
         flex: 1 / 3,
         alignItems: 'center'
+    },
+    footerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        width: '100%',
+        marginBottom: 20,
     },
     imageContainer: {
         flex: 1,
