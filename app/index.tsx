@@ -8,7 +8,6 @@ import * as MediaLibrary from 'expo-media-library';
 import {captureRef} from "react-native-view-shot";
 import domToImage from 'dom-to-image';
 
-
 import ImageViewer from "@/components/ImageViewer";
 import ButtonView from "@/components/ButtonView";
 import CircularButton from "@/components/CircularButton";
@@ -16,8 +15,10 @@ import IconButton from "@/components/IconButton";
 import EmojiPickerModal from "@/components/EmojiPickerModal";
 import EmojiList from "@/components/EmojiList";
 import EmojiSticker from "@/components/EmojiSticker";
+import { useNavigation } from 'expo-router';
 
 export default function Index() {
+    const navigation = useNavigation();
     const [status, requestPermission] = MediaLibrary.usePermissions();
     const [selectedImage, setSelectedImage] = useState<string>('');
     const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
@@ -73,12 +74,11 @@ export default function Index() {
                     link.href = dataUrl;
                     link.click();
                 }
+                navigation.navigate('EndScreen');
             } catch (e) {
                 alert("An error occurred while saving the image");
                 ;
             }
-
-
         }
 
     }
@@ -89,7 +89,7 @@ export default function Index() {
     if (status === null) {
         requestPermission();
     }
-    //
+
     return (
         <GestureHandlerRootView
             style={styles.background}
