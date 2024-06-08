@@ -11,8 +11,8 @@ const EndScreen = () => {
         <View style={styles.container}>
                 <Confetti 
                     numberOfPieces={1000}
-                    gravity={0.05}
-                    initialVelocityY={40}
+                    gravity={0.14}
+                    initialVelocityY={30}
                     recycle={false}
                 />
             <Text style={styles.thankYouText}>Thank You!</Text>
