@@ -8,7 +8,6 @@ import * as MediaLibrary from 'expo-media-library';
 import {captureRef} from "react-native-view-shot";
 import domToImage from 'dom-to-image';
 
-
 import ImageViewer from "@/components/ImageViewer";
 import ButtonView from "@/components/ButtonView";
 import CircularButton from "@/components/CircularButton";
@@ -24,6 +23,11 @@ export default function Index() {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | null>(null);
     const imageRef = useRef(null);
+
+    const imageBoundaries = {
+        width: 320,
+        height: 440
+    }
 
     const pickImageAsync = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -89,7 +93,7 @@ export default function Index() {
     if (status === null) {
         requestPermission();
     }
-    //
+
     return (
         <GestureHandlerRootView
             style={styles.background}
@@ -103,7 +107,7 @@ export default function Index() {
                     placeHolderSource={require('@/assets/images/background-image.png')}
                     imageSource={selectedImage}
                 />
-                {pickedEmoji ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji}/> : null}
+                {pickedEmoji ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji} imageBoundaries={imageBoundaries} /> : null}
             </View>
             {
                 showAppOptions ? (
