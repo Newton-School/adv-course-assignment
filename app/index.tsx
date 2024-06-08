@@ -8,7 +8,6 @@ import * as MediaLibrary from 'expo-media-library';
 import {captureRef} from "react-native-view-shot";
 import domToImage from 'dom-to-image';
 
-
 import ImageViewer from "@/components/ImageViewer";
 import ButtonView from "@/components/ButtonView";
 import CircularButton from "@/components/CircularButton";
@@ -16,8 +15,10 @@ import IconButton from "@/components/IconButton";
 import EmojiPickerModal from "@/components/EmojiPickerModal";
 import EmojiList from "@/components/EmojiList";
 import EmojiSticker from "@/components/EmojiSticker";
+import { useNavigation } from 'expo-router';
 
 export default function Index() {
+    const navigation = useNavigation();
     const [status, requestPermission] = MediaLibrary.usePermissions();
     const [selectedImage, setSelectedImage] = useState<string>('');
     const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
@@ -73,12 +74,11 @@ export default function Index() {
                     link.href = dataUrl;
                     link.click();
                 }
+                navigation.navigate('EndScreen');
             } catch (e) {
                 alert("An error occurred while saving the image");
                 ;
             }
-
-
         }
 
     }
@@ -89,7 +89,7 @@ export default function Index() {
     if (status === null) {
         requestPermission();
     }
-    //
+
     return (
         <GestureHandlerRootView
             style={styles.background}
@@ -168,3 +168,162 @@ const styles = StyleSheet.create({
         width: '100%'
     }
 });
+
+
+
+// import { useRef, useState } from "react";
+// import { ImageSourcePropType, Platform, StyleSheet, View } from "react-native";
+// import { StatusBar } from "expo-status-bar";
+// import * as ImagePicker from 'expo-image-picker';
+// import { GestureHandlerRootView } from "react-native-gesture-handler";
+// import * as MediaLibrary from 'expo-media-library';
+// import { captureRef } from "react-native-view-shot";
+// import domToImage from 'dom-to-image';
+// import ImageViewer from "@/components/ImageViewer";
+// import ButtonView from "@/components/ButtonView";
+// import CircularButton from "@/components/CircularButton";
+// import IconButton from "@/components/IconButton";
+// import EmojiPickerModal from "@/components/EmojiPickerModal";
+// import EmojiList from "@/components/EmojiList";
+// import EmojiSticker from "@/components/EmojiSticker";
+// import ToggleButton from "@/components/ToggleButton";
+// import { Colors } from "@/constants/Colors";
+
+// export default function Index() {
+//     const [status, requestPermission] = MediaLibrary.usePermissions();
+//     const [selectedImage, setSelectedImage] = useState<string>('');
+//     const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
+//     const [modalVisible, setModalVisible] = useState<boolean>(false);
+//     const [pickedEmojis, setPickedEmojis] = useState<ImageSourcePropType[]>([]);
+//     const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+//     const imageRef = useRef(null);
+
+//     const pickImageAsync = async () => {
+//         let result = await ImagePicker.launchImageLibraryAsync({
+//             allowsEditing: true,
+//             quality: 1,
+//         });
+//         if (!result.canceled) {
+//             setSelectedImage(result.assets[0].uri);
+//             setShowAppOptions(true);
+//         } else {
+//             alert("You cancelled the image picker");
+//         }
+//     };
+
+//     const onReset = () => {
+//         setShowAppOptions(false);
+//         setSelectedImage('');
+//         setPickedEmojis([]);
+//     }
+
+//     const onAddSticker = () => {
+//         setModalVisible(true);
+//     }
+
+//     const onSaveImageAsync = async () => {
+//         if (Platform.OS !== 'web') {
+//             try {
+//                 const localUri = await captureRef(imageRef, {
+//                     height: 440,
+//                     quality: 1,
+//                 });
+
+//                 await MediaLibrary.saveToLibraryAsync(localUri);
+//                 if (localUri) {
+//                     alert("Image saved successfully");
+//                 }
+//             } catch (e) {
+//                 alert("An error occurred while saving the image");
+//             }
+//         } else {
+//             try {
+//                 if (imageRef.current) {
+//                     const dataUrl = await domToImage.toJpeg(imageRef.current, {
+//                         width: 320,
+//                         height: 440,
+//                         quality: 1
+//                     });
+//                     let link = document.createElement('a');
+//                     link.download = 'image.jpeg';
+//                     link.href = dataUrl;
+//                     link.click();
+//                 }
+//             } catch (e) {
+//                 alert("An error occurred while saving the image");
+//             }
+//         }
+//     }
+
+//     const closeModal = () => {
+//         setModalVisible(false);
+//     }
+
+//     const addSticker = (emoji: ImageSourcePropType) => {
+//         setPickedEmojis([...pickedEmojis, emoji]);
+//     }
+
+//     const toggleTheme = () => {
+//         setIsDarkMode(prevMode => !prevMode);
+//     }
+
+//     if (status === null) {
+//         requestPermission();
+//     }
+
+//     return (
+//         <GestureHandlerRootView style={{ flex: 1 }}>
+//             <View style={[styles.container, { backgroundColor: isDarkMode ? Colors.dark.background : Colors.light.background }]}>
+//                 <View style={styles.imageContainer} ref={imageRef} collapsable={false}>
+//                     <ImageViewer placeHolderSource={require('@/assets/images/background-image.png')} imageSource={selectedImage}/>
+//                     {pickedEmojis.map((emoji, index) => (
+//                         <EmojiSticker key={index} imageSize={40} stickerSource={emoji}/>
+//                     ))}
+//                 </View>
+//                 {showAppOptions ? (
+//                     <View style={styles.optionsContainer}>
+//                         <View style={styles.optionsRow}>
+//                             <IconButton icon={"refresh"} onPress={onReset} text={"Reset"} theme={isDarkMode ? 'dark' : 'light'} />
+//                             <CircularButton onPress={onAddSticker} theme={isDarkMode ? 'dark' : 'light'} />
+//                             <IconButton icon={"save-alt"} onPress={onSaveImageAsync} text={"Save"} theme={isDarkMode ? 'dark' : 'light'} />
+//                             <ToggleButton isDarkMode={isDarkMode} onToggle={toggleTheme} />
+//                         </View>
+//                     </View>
+//                 ) : (
+//                     <View style={styles.footerContainer}>
+//                         <ButtonView theme='primary' text='Choose a photo' onPress={pickImageAsync} />
+//                         <ButtonView text='Use this photo' onPress={() => setShowAppOptions(true)} />
+//                     </View>
+//                 )}
+//                 <EmojiPickerModal isVisible={modalVisible} onClose={closeModal}>
+//                     <EmojiList onSelect={(emoji) => { addSticker(emoji); closeModal(); }} onCLose={closeModal}/>
+//                 </EmojiPickerModal>
+//                 <StatusBar style={isDarkMode ? 'light' : 'dark'} />
+//             </View>
+//         </GestureHandlerRootView>
+//     );
+// }
+
+// const styles = StyleSheet.create({
+//     container: {
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         flex: 1,
+//     },
+//     imageContainer: {
+//         flex: 1,
+//         paddingTop: 58,
+//     },
+//     optionsContainer: {
+//         position: "absolute",
+//         bottom: 80,
+//     },
+//     optionsRow: {
+//         flexDirection: 'row',
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//     },
+//     footerContainer: {
+//         padding: 16,
+//     },
+// });
