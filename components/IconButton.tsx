@@ -12,7 +12,7 @@ export default function IconButton({icon, onPress, text}: {
             style={styles.iconButton}
             onPress={onPress}
         >
-            <MaterialIcons name={icon} size={24} color="#fff"/>
+            <MaterialIcons name={icon} size={24} color="#00b894"/>
             <Text style={styles.iconButtonLabel}>{text}</Text>
         </Pressable>
     );
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     iconButtonLabel: {
-        color: '#fff',
+        color: '#00b894',
         marginTop: 12
     }
 })

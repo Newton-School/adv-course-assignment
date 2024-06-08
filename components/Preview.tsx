@@ -7,7 +7,7 @@ interface ImagePreviewBarProps {
     onSelectImage: (imageUri: string) => void;
 }
 
-const ImagePreviewBar: React.FC<ImagePreviewBarProps> = ({
+const Preview: React.FC<ImagePreviewBarProps> = ({
                                                              images,
                                                              selectedImage,
                                                              onSelectImage,
@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginVertical: 10,
+        marginTop:40,
     },
     previewImage: {
         width: 50,
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     },
     selected: {
         opacity: 1,
-        borderColor: "#FFD700",
+        borderColor: "#00b894",
         borderWidth: 2,
     },
     deselected: {
@@ -54,4 +55,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ImagePreviewBar;
+export default Preview;
