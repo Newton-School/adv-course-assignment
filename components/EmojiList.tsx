@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     emoji: {
-        width: 100,
-        height: 100,
-        marginRight: 20
+        width: 70,
+        height: 70,
+        marginRight: 30
     }
 })
