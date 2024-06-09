@@ -1,11 +1,13 @@
-import {useRef, useState} from "react";
+import { useRef, useState } from "react";
 
-import {ImageSourcePropType, Platform, StyleSheet, View} from "react-native";
-import {StatusBar} from "expo-status-bar";
+import {
+    ImageSourcePropType, Platform, StyleSheet, View, FlatList, Image, TouchableOpacity
+} from "react-native";
+import { StatusBar } from "expo-status-bar";
 import * as ImagePicker from 'expo-image-picker';
-import {GestureHandlerRootView} from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as MediaLibrary from 'expo-media-library';
-import {captureRef} from "react-native-view-shot";
+import { captureRef } from "react-native-view-shot";
 import domToImage from 'dom-to-image';
 
 
@@ -17,13 +19,23 @@ import EmojiPickerModal from "@/components/EmojiPickerModal";
 import EmojiList from "@/components/EmojiList";
 import EmojiSticker from "@/components/EmojiSticker";
 
+const backgroundImages = [
+    require("@/assets/images/background-image-1.png"),
+    require("@/assets/images/background-image-2.png"),
+    require("@/assets/images/background-image-3.png"),
+    require("@/assets/images/background-image-4.png"),
+    require("@/assets/images/background-image-5.png"),
+];
+
 export default function Index() {
     const [status, requestPermission] = MediaLibrary.usePermissions();
     const [selectedImage, setSelectedImage] = useState<string>('');
     const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | null>(null);
+    const [backgroundIndex, setBackgroundIndex] = useState<number>(0);
     const imageRef = useRef(null);
+
 
     const pickImageAsync = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -85,52 +97,74 @@ export default function Index() {
     const closeModal = () => {
         setModalVisible(false);
     }
+    const renderBackgroundImage = ({ item, index }) => {
+        return (
+            <TouchableOpacity onPress={() => setBackgroundIndex(index)}>
+                <Image
+                    source={item}
+                    style={[
+                        styles.backgroundThumbnail,
+                        { opacity: index === backgroundIndex ? 1 : 0.5 },
+                    ]}
+                />
+            </TouchableOpacity>
+        );
+    };
 
     if (status === null) {
         requestPermission();
     }
+
     //
     return (
         <GestureHandlerRootView
             style={styles.background}
         >
+            <FlatList
+                data={backgroundImages}
+                renderItem={renderBackgroundImage}
+                horizontal
+                keyExtractor={(item, index) => index.toString()}
+                contentContainerStyle={styles.thumbnailList}
+            />
             <View
                 style={styles.imageContainer}
                 ref={imageRef}
                 collapsable={false}
             >
                 <ImageViewer
-                    placeHolderSource={require('@/assets/images/background-image.png')}
+                    placeHolderSource={backgroundImages[backgroundIndex]}
                     imageSource={selectedImage}
                 />
-                {pickedEmoji ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji}/> : null}
+                {pickedEmoji ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji} /> : null}
             </View>
             {
                 showAppOptions ? (
                     <View style={styles.optionsContainer}>
                         <View style={styles.optionsRow}>
-                            <IconButton icon={"refresh"} onPress={onReset} text={"Reset"}/>
-                            <CircularButton onPress={onAddSticker}/>
-                            <IconButton icon={"save-alt"} onPress={onSaveImageAsync} text={"Save"}/>
+                            <IconButton icon={"refresh"} onPress={onReset} text={"Reset"} />
+                            <CircularButton onPress={onAddSticker} />
+                            <IconButton icon={"save-alt"} onPress={onSaveImageAsync} text={"Save"} />
                         </View>
                     </View>
                 ) : (
                     <View style={styles.footerContainer}>
+                        <View style={styles.spacer} />
                         <ButtonView
                             theme={'primary'}
-                            text={'Choose a photo'} onPress={pickImageAsync}/>
+                            text={'Choose a photo'} onPress={pickImageAsync} />
                         <ButtonView text={'Use this photo'} onPress={
                             () => {
                                 setShowAppOptions(true);
                             }
-                        }/>
+                        } />
                     </View>
                 )
             }
             <EmojiPickerModal isVisible={modalVisible} onClose={closeModal}>
-                <EmojiList onSelect={setPickedEmoji} onCLose={closeModal}/>
+                <EmojiList onSelect={setPickedEmoji} onCLose={closeModal} />
             </EmojiPickerModal>
-            <StatusBar style="inverted"/>
+            <StatusBar style="inverted" />
         </GestureHandlerRootView>
     );
 }
@@ -139,9 +173,10 @@ export default function Index() {
 const styles = StyleSheet.create({
     background: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         backgroundColor: '#25292e',
+        paddingTop: 50,
     },
     text: {
         fontSize: 28,
@@ -150,21 +185,37 @@ const styles = StyleSheet.create({
         color: '#fff',
     },
     footerContainer: {
-        flex: 1 / 3,
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        paddingBottom: 10,
+    },
+    spacer: {
+        height: 50,
     },
     imageContainer: {
-        flex: 1,
-        paddingTop: 58
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     optionsContainer: {
-        position: "absolute",
-        bottom: 80
+        bottom: 1,
+        width: '100%',
+        alignItems: 'center',
     },
     optionsRow: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
-        width: '100%'
-    }
+    },
+    thumbnailList: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 10,
+    },
+    backgroundThumbnail: {
+        width: 80,
+        height: 80,
+        marginHorizontal: 5,
+        borderRadius: 10,
+    },
 });
