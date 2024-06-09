@@ -8,7 +8,7 @@ You can use the doc here: https://docs.expo.dev/get-started/set-up-your-environm
 Before you begin, make sure you have the following installed on your Mac:
 
 - [Node.js](https://nodejs.org/) (version 20 or higher)
-- https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating ( use this to install node version )
+- https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating (use this to install node version)
 - [npm](https://www.npmjs.com/) (comes with Node.js)
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
 
@@ -48,7 +48,7 @@ npx expo start
 ### On an iOS Simulator
 
 1. Make sure you have Xcode installed from the Mac App Store.
-2. click on the `Run on iOS simulator` button in the Expo development tools.
+2. Click on the `Run on iOS simulator` button in the Expo development tools.
 
 ### On a Physical Device
 
@@ -64,7 +64,7 @@ npx expo start
 5. Choose a system image (ensure it's an x86 image for better performance) and click `Next`.
 6. Verify the configuration and click `Finish` to create the AVD.
 7. Start the AVD by clicking the `Play` button in the `AVD Manager`.
-8. click on the `Run on Android device/emulator` button in the Expo development tools.
+8. Click on the `Run on Android device/emulator` button in the Expo development tools.
 
 ### On a Physical Android Device
 
@@ -72,7 +72,7 @@ npx expo start
    - Go to `Settings` > `About phone` and tap `Build number` seven times to enable Developer Options.
    - Go to `Settings` > `Developer options` and enable `USB debugging`.
 2. Connect your Android device to your Mac via USB.
-3. click on the `Run on Android device/emulator` button in the Expo development tools.
+3. Click on the `Run on Android device/emulator` button in the Expo development tools.
 4. Follow the prompts on your Android device to allow USB debugging and install the Expo Go app.
 5. The app should now run on your connected Android device.
 
