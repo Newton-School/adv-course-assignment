@@ -6,6 +6,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 export default function EmojiPickerModal({isVisible, onClose, children}:
                                              { isVisible: boolean, onClose: () => void, children: React.ReactNode }) {
     return (
+
         <Modal
             animationType="slide"
             transparent={true}
@@ -18,7 +19,7 @@ export default function EmojiPickerModal({isVisible, onClose, children}:
                     <Pressable
                         onPress={onClose}
                     >
-                        <MaterialIcons name="close" color="#fff" size={22}/>
+                        <MaterialIcons name="close" style={styles.cross} size={22}/>
                     </Pressable>
                 </View>
                 {children}
@@ -30,25 +31,32 @@ export default function EmojiPickerModal({isVisible, onClose, children}:
 const styles = StyleSheet.create({
     modalContainer: {
         height: '25%',
-        width: '100%',
-        backgroundColor: '#25292e',
-        borderTopRightRadius: 18,
-        borderTopLeftRadius: 18,
+        width: '93%',
+        backgroundColor: '#000',
+        borderRadius:20,
         position: 'absolute',
         bottom: 0,
+        margin:15,
     },
     titleContainer: {
-        height: '16%',
-        backgroundColor: '#464C55',
-        borderTopRightRadius: 10,
-        borderTopLeftRadius: 10,
+        height: '22%',
+        backgroundColor: '#000',
+        borderRadius:20,
         paddingHorizontal: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
     title: {
         color: '#fff',
-        fontSize: 18,
+        fontSize: 22,
         lineHeight: 24,
+        margin:"auto",
+    },
+    cross:{
+        marginTop:8,
+        color:"#fff",
+        borderRadius:100,
+        backgroundColor:"#3a3a3a",
+        padding:3
     }
 })

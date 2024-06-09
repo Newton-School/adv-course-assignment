@@ -8,7 +8,7 @@ import * as MediaLibrary from 'expo-media-library';
 import {captureRef} from "react-native-view-shot";
 import domToImage from 'dom-to-image';
 
-
+import { ToastContainer, Bounce, toast } from "react-toastify";
 import ImageViewer from "@/components/ImageViewer";
 import ButtonView from "@/components/ButtonView";
 import CircularButton from "@/components/CircularButton";
@@ -16,7 +16,7 @@ import IconButton from "@/components/IconButton";
 import EmojiPickerModal from "@/components/EmojiPickerModal";
 import EmojiList from "@/components/EmojiList";
 import EmojiSticker from "@/components/EmojiSticker";
-
+import 'react-toastify/dist/ReactToastify.css';
 export default function Index() {
     const [status, requestPermission] = MediaLibrary.usePermissions();
     const [selectedImage, setSelectedImage] = useState<string>('');
@@ -34,7 +34,9 @@ export default function Index() {
             setSelectedImage(result.assets[0].uri);
             setShowAppOptions(true);
         } else {
-            alert("you cancelled the image picker");
+            toast.error("you cancelled the image picker", {
+                theme: "dark"
+            });
         }
     };
     const onReset = () => {
@@ -46,6 +48,15 @@ export default function Index() {
         setModalVisible(true);
     }
     const onSaveImageAsync = async () => {
+
+        if (!pickedEmoji) {
+            toast.error("Oh! no, no, no!!!", {
+                theme: "dark"
+            });
+            return;
+        }
+
+
         if (Platform.OS !== 'web') {
             try {
                 const localUri = await captureRef(imageRef, {
@@ -55,11 +66,13 @@ export default function Index() {
 
                 await MediaLibrary.saveToLibraryAsync(localUri);
                 if (localUri) {
-                    alert("Image saved successfully");
+                    toast.success("Image saved successfully", {
+                    });
                 }
             } catch (e) {
-                alert("An error occurred while saving the image");
-            }
+                toast.error("An error occurred while saving the image", {
+                    theme: "dark"
+                });            }
         } else {
             try {
                 if (imageRef.current) {
@@ -74,8 +87,9 @@ export default function Index() {
                     link.click();
                 }
             } catch (e) {
-                alert("An error occurred while saving the image");
-                ;
+                toast.error("An error occurred while saving the image", {
+                    theme: "dark"
+                });
             }
 
 
@@ -90,7 +104,22 @@ export default function Index() {
         requestPermission();
     }
     //
-    return (
+    return (<>
+
+        <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+            transition={Bounce}
+        ></ToastContainer>
+
         <GestureHandlerRootView
             style={styles.background}
         >
@@ -132,16 +161,16 @@ export default function Index() {
             </EmojiPickerModal>
             <StatusBar style="inverted"/>
         </GestureHandlerRootView>
+        </>
     );
 }
-
 
 const styles = StyleSheet.create({
     background: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#25292e',
+        backgroundColor: '#111',
     },
     text: {
         fontSize: 28,
