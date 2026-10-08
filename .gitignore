@@ -19,3 +19,9 @@ web-build/
 
 expo-env.d.ts
 # @end expo-cli
+
+# Build outputs (Android app bundles and APK sets)
+*.aab
+*.apk
+*.apks
+toc.pb
